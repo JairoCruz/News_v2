@@ -6,7 +6,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.0.0-alpha09"
+        classpath 'com.android.tools.build:gradle:4.0.0-beta01'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -23,4 +23,31 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext {
+
+    // Compile Version
+    compileSdkVersion = 29
+    compileSdkMinVersion = 19
+    compileTargetSdkVersion = 29
+    buildToolsVersion = "29.0.3"
+
+    // Architecture Components
+
+    // Android ktx core
+    ktx_version = "1.1.0"
+
+    // Room
+    room_version = "2.2.3"
+
+    // ViewModel and LiveData
+    lifecycle_version = "2.2.0"
+    arch_version = "2.1.0"
+
+    // Retrofit
+    retrofit_version = "2.7.2"
+
+    // Moshin
+    moshi_version = "1.9.2"
 }
