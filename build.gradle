@@ -4,6 +4,7 @@ buildscript {
     repositories {
         google()
         jcenter()
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.0-beta01'
@@ -29,7 +30,7 @@ ext {
 
     // Compile Version
     compileSdkVersion = 29
-    compileSdkMinVersion = 19
+    compileSdkMinVersion = 21
     compileTargetSdkVersion = 29
     buildToolsVersion = "29.0.3"
 
@@ -45,9 +46,17 @@ ext {
     lifecycle_version = "2.2.0"
     arch_version = "2.1.0"
 
+    // Navigation
+    nav_version = "2.3.0-alpha01"
+
     // Retrofit
     retrofit_version = "2.7.2"
 
     // Moshin
     moshi_version = "1.9.2"
+
+    // Glide
+    glide_version = "4.11.0"
+
+
 }
