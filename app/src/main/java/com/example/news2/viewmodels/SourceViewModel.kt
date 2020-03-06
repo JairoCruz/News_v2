@@ -1,9 +1,11 @@
 package com.example.news2.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.news2.database.entities.Source
 import com.example.news2.database.getDatabase
 import com.example.news2.repository.SourceRepository
 import kotlinx.coroutines.CoroutineScope
@@ -46,6 +48,16 @@ class SourceViewModel(application: Application) : AndroidViewModel(application) 
             } catch (networkError: IOException) {
                 if (sourceList.value.isNullOrEmpty())
                     _eventNetworkError.value = true
+            }
+        }
+    }
+
+    fun updateSource(source: Source) {
+        viewModelScope.launch {
+            try {
+                sourcesRepository.updateSource(source)
+            } catch (error: IOException){
+                Log.e("from SourceViewModel", "algo salio mal: $error")
             }
         }
     }

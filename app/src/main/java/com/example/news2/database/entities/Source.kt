@@ -20,7 +20,8 @@ data class Source constructor(
     val url: String,
     val category: String,
     val language: String,
-    val country: String
+    val country: String,
+    val isChecked: Boolean
 )
 
 /**
@@ -37,7 +38,8 @@ fun List<Source>.asDomainModel(): List<SourceDomain> {
             url = it.url,
             category = it.category,
             language = it.language,
-            country = it.country
+            country = it.country,
+            isChecked = it.isChecked
         )
     }
 

@@ -3,6 +3,7 @@ package com.example.news2.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.example.news2.database.NewsDatabase
+import com.example.news2.database.entities.Source
 import com.example.news2.database.entities.asDomainModel
 import com.example.news2.model.SourceDomain
 import com.example.news2.network.NetworkSource
@@ -34,6 +35,12 @@ class SourceRepository(private val database: NewsDatabase) {
         withContext(Dispatchers.IO) {
             val sourceList = NewsNetwork.network.getSources(API_KEY)
             database.sourceDao.insert(sourceList.asDatabaseModel())
+        }
+    }
+
+    suspend fun updateSource(source: Source) {
+        withContext(Dispatchers.IO) {
+            database.sourceDao.updateSource(source)
         }
     }
 }

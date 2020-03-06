@@ -37,7 +37,8 @@ data class NetworkSource(
     val url: String,
     val category: String,
     val language: String,
-    val country: String
+    val country: String,
+    val isChecked: Boolean = false
 )
 
 /**
@@ -52,7 +53,8 @@ fun NetworkSourceContainer.asDomainModel(): List<SourceDomain> {
             url = it.url,
             category = it.category,
             language = it.language,
-            country = it.country
+            country = it.country,
+            isChecked = it.isChecked
         )
     }
 
@@ -70,7 +72,8 @@ fun NetworkSourceContainer.asDatabaseModel(): List<Source> {
             url = it.url,
             category = it.category,
             language = it.language,
-            country = it.country
+            country = it.country,
+            isChecked = it.isChecked
         )
     }
 }
