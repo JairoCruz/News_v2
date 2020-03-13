@@ -2,10 +2,13 @@ package com.example.news2.adapters
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.recyclerview.selection.ItemDetailsLookup
+import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.RecyclerView
 import com.example.news2.R
 import com.example.news2.SourceFragment
@@ -13,8 +16,12 @@ import com.example.news2.databinding.SourceItemBinding
 import com.example.news2.model.SourceDomain
 import kotlinx.android.synthetic.main.source_item.view.*
 
-class SourceAdapter(val callBack: SourceFragment.CheckBoxClick) : RecyclerView.Adapter<SourceViewHolder>() {
+class SourceAdapter(val callBack: SourceFragment.CheckBoxClick/*, val callBackCard: SourceFragment.CardViewClick*/) : RecyclerView.Adapter<SourceViewHolder>() {
 
+    init {
+        setHasStableIds(true)
+    }
+    var tracker: SelectionTracker<Long>? = null
     /**
      * The sources that our Adapter will show
      *
@@ -34,30 +41,22 @@ class SourceAdapter(val callBack: SourceFragment.CheckBoxClick) : RecyclerView.A
         return sources.size
     }
 
+    override fun getItemId(position: Int): Long = position.toLong()
+
     override fun onBindViewHolder(holder: SourceViewHolder, position: Int) {
-        holder.viewDataBinding.also {
-            // Log.e("Adpater2", "sera")
-            it.source = sources[position]
-
-
-
-            it.clickCheckBox = callBack
-
-          /* it.checkBox.setOnClickListener { v ->
-                if(!sources[position].isChecked){
-                    v.checkBox.isChecked = true
-
-                    sources[position].isChecked = true
-                } else {
-                    v.checkBox.isChecked = false
-                    sources[position].isChecked = false
-                }
+       // Log.e("SourceAdapter", "value112: $tracker")
+        tracker?.let {
+            Log.e("SourceAdapter", "ESTOY ACA: ${position.toLong()}")
+            //holder.bin(it.isSelected(position.toLong()))
+            holder.viewDataBinding.also { sib: SourceItemBinding ->
+                // Log.e("Adpater2", "sera")
+                sib.source = sources[position]
+                sib.clickCheckBox = callBack
+               // sib.clickCardView = callBackCard
+                sib.cardViewSource.isActivated = it.isSelected(position.toLong())
             }
-
-
-            */
-
         }
+
     }
 
 }
@@ -67,4 +66,17 @@ class SourceViewHolder(val viewDataBinding: SourceItemBinding) : RecyclerView.Vi
         @LayoutRes
         val LAYOUT = R.layout.source_item
     }
+
+    fun bin(isActivated: Boolean = false) {
+        Log.e("SourceAdapter", "Estoy: $isActivated")
+        itemView.isActivated = isActivated
+    }
+
+    fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
+        object : ItemDetailsLookup.ItemDetails<Long>() {
+            override fun getSelectionKey(): Long? = itemId
+
+            override fun getPosition(): Int = adapterPosition
+
+        }
 }
