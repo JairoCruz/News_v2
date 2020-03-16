@@ -4,11 +4,8 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
 import android.widget.CheckBox
 import android.widget.Checkable
 import android.widget.Toast
@@ -33,6 +30,7 @@ import com.example.news2.databinding.FragmentSourceBinding
 import com.example.news2.model.SourceDomain
 import com.example.news2.viewmodels.SourceViewModel
 import com.example.news2.viewmodels.viewmodelfactory.SourceViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_source.*
 
 
@@ -59,6 +57,33 @@ class SourceFragment : Fragment() {
 
     companion object {
         var isMultiselectOn = false
+    }
+
+    private val actionModelCallback = object : ActionMode.Callback {
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+            return when (item?.itemId){
+                R.id.add -> {
+                    mode?.finish()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            val inflater: MenuInflater = mode!!.menuInflater
+            inflater.inflate(R.menu.menu_action, menu)
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            return false
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            actionMode = null
+        }
+
     }
 
 
@@ -111,6 +136,17 @@ class SourceFragment : Fragment() {
             ).withSelectionPredicate(
                 SelectionPredicates.createSelectAnything()
             ).build()
+
+            tracker?.addObserver(
+                object : SelectionTracker.SelectionObserver<Long>() {
+                    override fun onSelectionChanged() {
+                        super.onSelectionChanged()
+                        val items: Int? = tracker?.selection!!.size()
+                        Log.e(TAG, "Size Selection: $items")
+
+                    }
+                }
+            )
 
             Log.e(TAG, "aca3: ${tracker?.let { "hola3" }}")
         }
