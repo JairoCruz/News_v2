@@ -13,23 +13,26 @@
             type="com.example.news2.SourceFragment.CheckBoxClick"
             />
 
-
     </data>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardViewSource"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         app:cardCornerRadius="0dp"
-        app:cardElevation="0dp"
-        android:background="@drawable/item_background"
+        app:cardElevation="4dp"
+        style="@style/Widget.MaterialComponents.CardView"
+        android:checkable="true"
+        android:focusable="true"
+        android:clickable="true"
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="88dp"
+            android:background="@drawable/item_background"
           >
 
             <androidx.constraintlayout.widget.Guideline
@@ -112,7 +115,7 @@
                 android:id="@+id/checkBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="9dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginEnd="9dp"
                 android:checked="@{source.isChecked}"
                 android:onClick="@{(view) -> clickCheckBox.onClick(view,source)}"

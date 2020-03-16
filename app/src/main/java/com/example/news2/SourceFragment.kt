@@ -10,8 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.CheckBox
+import android.widget.Checkable
 import android.widget.Toast
 import androidx.appcompat.view.ActionMode
+import androidx.cardview.widget.CardView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
@@ -52,8 +54,6 @@ class SourceFragment : Fragment() {
 
     private var viewModelAdapter: SourceAdapter? = null
 
-    private var listSourcesDialog: List<SourceDomain> = emptyList()
-
 
     var actionMode: ActionMode? = null
 
@@ -82,12 +82,6 @@ class SourceFragment : Fragment() {
 
 
 
-
-
-
-
-
-
         val binding: FragmentSourceBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_source, container, false)
         binding.name = "jairo"
         binding.lifecycleOwner = viewLifecycleOwner
@@ -103,14 +97,10 @@ class SourceFragment : Fragment() {
                 viewModel.updateSource(s)
             }
 
-        }/*, CardViewClick {
-            Log.e(TAG, "vaya 2: $it")
-        }*/)
+        })
         binding.root.findViewById<RecyclerView>(R.id.recycler_view).apply {
             layoutManager = LinearLayoutManager(context)
             adapter = viewModelAdapter
-            //Log.e(TAG, "aca1: ${recycler_view?.let { "hola1" }}")
-            //Log.e(TAG, "aca2: ${this?.let { "hola2" }}")
 
             tracker =  SelectionTracker.Builder<Long> (
                 "mySelection",
@@ -148,26 +138,9 @@ class SourceFragment : Fragment() {
         }
     }
 
-    class CardViewClick(val isSelected: (Boolean) -> Unit) {
 
-        fun isSelecF(select: Boolean) = isSelected(select)
-        /*fun onClick(view: View, source: SourceDomain) {
-            return block(source)
-        }
-        */
-       /* fun onLongClick(view: View) {
-            return true
-        }
-        */
-    }
 
-    private fun listSourceToCharSequence(list: List<SourceDomain>): Array<CharSequence> {
-        val csSource: MutableList<CharSequence> = ArrayList()
-        for (i in list.indices) {
-            csSource.add((list[i].name))
-        }
-        return csSource.toTypedArray()
-    }
+
 
     private fun showListDialogSources(view: View){
         Log.e(TAG, "Click FAb")

@@ -16,7 +16,7 @@ import com.example.news2.databinding.SourceItemBinding
 import com.example.news2.model.SourceDomain
 import kotlinx.android.synthetic.main.source_item.view.*
 
-class SourceAdapter(val callBack: SourceFragment.CheckBoxClick/*, val callBackCard: SourceFragment.CardViewClick*/) : RecyclerView.Adapter<SourceViewHolder>() {
+class SourceAdapter(val callBack: SourceFragment.CheckBoxClick) : RecyclerView.Adapter<SourceViewHolder>() {
 
     init {
         setHasStableIds(true)
@@ -44,16 +44,14 @@ class SourceAdapter(val callBack: SourceFragment.CheckBoxClick/*, val callBackCa
     override fun getItemId(position: Int): Long = position.toLong()
 
     override fun onBindViewHolder(holder: SourceViewHolder, position: Int) {
-       // Log.e("SourceAdapter", "value112: $tracker")
+
         tracker?.let {
-            Log.e("SourceAdapter", "ESTOY ACA: ${position.toLong()}")
-            //holder.bin(it.isSelected(position.toLong()))
+            Log.e("Sour","select: ${it.isSelected(position.toLong())}")
+            holder.bin(it.isSelected(position.toLong()))
             holder.viewDataBinding.also { sib: SourceItemBinding ->
                 // Log.e("Adpater2", "sera")
                 sib.source = sources[position]
                 sib.clickCheckBox = callBack
-               // sib.clickCardView = callBackCard
-                sib.cardViewSource.isActivated = it.isSelected(position.toLong())
             }
         }
 
@@ -65,11 +63,13 @@ class SourceViewHolder(val viewDataBinding: SourceItemBinding) : RecyclerView.Vi
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.source_item
+
     }
 
     fun bin(isActivated: Boolean = false) {
         Log.e("SourceAdapter", "Estoy: $isActivated")
         itemView.isActivated = isActivated
+
     }
 
     fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
