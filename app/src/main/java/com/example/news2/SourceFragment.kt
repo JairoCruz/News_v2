@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import android.widget.CheckBox
 import android.widget.Checkable
 import android.widget.Toast
-import androidx.appcompat.view.ActionMode
+
 import androidx.cardview.widget.CardView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
@@ -142,7 +142,26 @@ class SourceFragment : Fragment() {
                     override fun onSelectionChanged() {
                         super.onSelectionChanged()
                         val items: Int? = tracker?.selection!!.size()
-                        Log.e(TAG, "Size Selection: $items")
+                        //Log.e(TAG, "Size Selection: $items")
+                        if (items != 0){
+                            when (actionMode) {
+                                null -> {
+                                    Log.e("T","sol un vez")
+                                    actionMode = activity?.startActionMode(actionModelCallback)?.apply {
+                                        title = items.toString()
+                                    }
+
+                                }
+                                else -> {
+                                    Log.e("T","sol un vez2")
+                                    actionMode?.apply {
+                                        title = items.toString()
+                                    }
+                                    false
+                                }
+                            }
+                        }
+
 
                     }
                 }
