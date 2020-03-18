@@ -55,9 +55,6 @@ class SourceFragment : Fragment() {
 
     var actionMode: ActionMode? = null
 
-    companion object {
-        var isMultiselectOn = false
-    }
 
     private val actionModelCallback = object : ActionMode.Callback {
         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
@@ -82,6 +79,7 @@ class SourceFragment : Fragment() {
 
         override fun onDestroyActionMode(mode: ActionMode?) {
             actionMode = null
+            tracker?.clearSelection()
         }
 
     }
@@ -112,17 +110,7 @@ class SourceFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
-        viewModelAdapter = SourceAdapter(CheckBoxClick {
-            //Log.e(TAG, "vaya: $it")
-            if (it.isChecked){
-                val s = Source(it.id,it.name,it.description,it.url,it.category,it.language,it.country, false)
-                viewModel.updateSource(s)
-            } else {
-                val s = Source(it.id,it.name,it.description,it.url,it.category,it.language,it.country, true)
-                viewModel.updateSource(s)
-            }
-
-        })
+        viewModelAdapter = SourceAdapter()
         binding.root.findViewById<RecyclerView>(R.id.recycler_view).apply {
             layoutManager = LinearLayoutManager(context)
             adapter = viewModelAdapter
@@ -142,32 +130,35 @@ class SourceFragment : Fragment() {
                     override fun onSelectionChanged() {
                         super.onSelectionChanged()
                         val items: Int? = tracker?.selection!!.size()
-                        //Log.e(TAG, "Size Selection: $items")
+                        Log.e(TAG, "Size Selection: $items")
                         if (items != 0){
                             when (actionMode) {
                                 null -> {
-                                    Log.e("T","sol un vez")
+
                                     actionMode = activity?.startActionMode(actionModelCallback)?.apply {
-                                        title = items.toString()
+                                        title = "Selected ${items.toString()}"
                                     }
 
                                 }
                                 else -> {
-                                    Log.e("T","sol un vez2")
+
                                     actionMode?.apply {
-                                        title = items.toString()
+                                        title = "Selected ${items.toString()}"
                                     }
                                     false
                                 }
                             }
+                        } else {
+                            actionMode?.finish()
                         }
-
-
                     }
+
+
                 }
+
             )
 
-            Log.e(TAG, "aca3: ${tracker?.let { "hola3" }}")
+           // Log.e(TAG, "aca3: ${tracker?.let { "hola3" }}")
         }
 
         binding.fabShowSources.setOnClickListener {
@@ -182,20 +173,6 @@ class SourceFragment : Fragment() {
 
 
     }
-
-    class CheckBoxClick(val block: (SourceDomain) -> Unit) {
-        fun onClick(view: View, source: SourceDomain) {
-            //Log.e("From click", "v: ${view.id}")
-            view.findViewById<CheckBox>(R.id.checkBox).apply {
-               // isChecked = true
-            }
-            return block(source)
-        }
-    }
-
-
-
-
 
     private fun showListDialogSources(view: View){
         Log.e(TAG, "Click FAb")

@@ -52,7 +52,8 @@ class SourceViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun updateSource(source: Source) {
+    // For Update one source item
+   /* fun updateSource(source: Source) {
         viewModelScope.launch {
             try {
                 sourcesRepository.updateSource(source)
@@ -61,6 +62,7 @@ class SourceViewModel(application: Application) : AndroidViewModel(application) 
             }
         }
     }
+    */
 
     fun onNetworkErrorShown() {
         _isNetworkErrorShown.value = true

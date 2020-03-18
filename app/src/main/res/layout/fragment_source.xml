@@ -18,11 +18,11 @@
         android:background="#FFFFFF"
         tools:context=".SourceFragment">
 
-        <TextView
+       <!-- <TextView
             android:id="@+id/plain_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{name}" />
+            android:text="@{name}" /> -->
 
         <!-- example data viewBinding
        <LinearLayout

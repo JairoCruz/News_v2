@@ -16,7 +16,7 @@ import com.example.news2.databinding.SourceItemBinding
 import com.example.news2.model.SourceDomain
 import kotlinx.android.synthetic.main.source_item.view.*
 
-class SourceAdapter(val callBack: SourceFragment.CheckBoxClick) : RecyclerView.Adapter<SourceViewHolder>() {
+class SourceAdapter() : RecyclerView.Adapter<SourceViewHolder>() {
 
     init {
         setHasStableIds(true)
@@ -46,12 +46,11 @@ class SourceAdapter(val callBack: SourceFragment.CheckBoxClick) : RecyclerView.A
     override fun onBindViewHolder(holder: SourceViewHolder, position: Int) {
 
         tracker?.let {
-            Log.e("Sour","select: ${it.isSelected(position.toLong())}")
+            //Log.e("Sour","select: ${it.isSelected(position.toLong())}")
             holder.bin(it.isSelected(position.toLong()))
             holder.viewDataBinding.also { sib: SourceItemBinding ->
                 // Log.e("Adpater2", "sera")
                 sib.source = sources[position]
-                sib.clickCheckBox = callBack
             }
         }
 
@@ -67,7 +66,7 @@ class SourceViewHolder(val viewDataBinding: SourceItemBinding) : RecyclerView.Vi
     }
 
     fun bin(isActivated: Boolean = false) {
-        Log.e("SourceAdapter", "Estoy: $isActivated")
+        //Log.e("SourceAdapter", "Estoy: $isActivated")
         itemView.isActivated = isActivated
 
     }
