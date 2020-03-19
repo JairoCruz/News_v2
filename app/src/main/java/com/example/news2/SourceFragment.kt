@@ -39,6 +39,7 @@ class SourceFragment : Fragment() {
     var tracker: SelectionTracker<Long>? = null
 
 
+
     // Variables
     private val TAG = SourceFragment::class.java.simpleName
 
@@ -91,6 +92,7 @@ class SourceFragment : Fragment() {
             sources -> sources?.apply {
             viewModelAdapter?.sources = sources
 
+
         }
         })
     }
@@ -106,11 +108,13 @@ class SourceFragment : Fragment() {
 
 
         val binding: FragmentSourceBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_source, container, false)
-        binding.name = "jairo"
+
+        binding.sourceSize = "Sources available"
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
         viewModelAdapter = SourceAdapter()
+
         binding.root.findViewById<RecyclerView>(R.id.recycler_view).apply {
             layoutManager = LinearLayoutManager(context)
             adapter = viewModelAdapter
@@ -168,6 +172,8 @@ class SourceFragment : Fragment() {
 
 
         viewModelAdapter?.tracker = tracker
+
+
 
         return binding.root
 
