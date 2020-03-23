@@ -89,11 +89,14 @@ class SourceFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.sourceList.observe(viewLifecycleOwner, Observer<List<SourceDomain>> {
-            sources -> sources?.apply {
+            it?.let {
+                viewModelAdapter?.submitList(it)
+            }
+            /*sources -> sources?.apply {
             viewModelAdapter?.sources = sources
 
 
-        }
+        }*/
         })
     }
 

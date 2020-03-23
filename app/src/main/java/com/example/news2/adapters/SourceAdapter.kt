@@ -9,6 +9,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.news2.R
 import com.example.news2.SourceFragment
@@ -16,7 +18,7 @@ import com.example.news2.databinding.SourceItemBinding
 import com.example.news2.model.SourceDomain
 import kotlinx.android.synthetic.main.source_item.view.*
 
-class SourceAdapter() : RecyclerView.Adapter<SourceViewHolder>() {
+class SourceAdapter() : ListAdapter<SourceDomain, SourceViewHolder>(SourceDiffCallback()) {
 
     init {
         setHasStableIds(true)
@@ -26,20 +28,20 @@ class SourceAdapter() : RecyclerView.Adapter<SourceViewHolder>() {
      * The sources that our Adapter will show
      *
      */
-    var sources: List<SourceDomain> = emptyList()
+    /*var sources: List<SourceDomain> = emptyList()
         set(value) {
             field = value
             notifyDataSetChanged()
-        }
+        }*/
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SourceViewHolder {
        val withDataBinding: SourceItemBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), SourceViewHolder.LAYOUT, parent, false)
         return SourceViewHolder(withDataBinding)
     }
 
-    override fun getItemCount(): Int {
+   /* override fun getItemCount(): Int {
         return sources.size
-    }
+    }*/
 
     override fun getItemId(position: Int): Long = position.toLong()
 
@@ -50,7 +52,7 @@ class SourceAdapter() : RecyclerView.Adapter<SourceViewHolder>() {
             holder.bin(it.isSelected(position.toLong()))
             holder.viewDataBinding.also { sib: SourceItemBinding ->
                 // Log.e("Adpater2", "sera")
-                sib.source = sources[position]
+                sib.source = getItem(position)
             }
         }
 
@@ -78,4 +80,16 @@ class SourceViewHolder(val viewDataBinding: SourceItemBinding) : RecyclerView.Vi
             override fun getPosition(): Int = adapterPosition
 
         }
+}
+
+
+class SourceDiffCallback : DiffUtil.ItemCallback<SourceDomain>() {
+    override fun areItemsTheSame(oldItem: SourceDomain, newItem: SourceDomain): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: SourceDomain, newItem: SourceDomain): Boolean {
+        return oldItem == newItem
+    }
+
 }
