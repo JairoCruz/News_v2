@@ -12,9 +12,10 @@ import com.example.news2.model.SourceDomain
 
 @Entity(tableName = "Sources", indices = [Index(value = ["id"])])
 data class Source constructor(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    var id: Long = 0L,
     @NonNull
-    val id: String,
+    val idSource: String,
     val name: String,
     val description: String,
     val url: String,
@@ -33,6 +34,7 @@ fun List<Source>.asDomainModel(): List<SourceDomain> {
     return map {
         SourceDomain(
             id = it.id,
+            idSource = it.idSource,
             name = it.name,
             description = it.description,
             url = it.url,

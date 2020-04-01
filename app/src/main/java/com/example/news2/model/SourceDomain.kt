@@ -1,7 +1,8 @@
 package com.example.news2.model
 
 data class SourceDomain(
-    val id: String,
+    var id: Long,
+    val idSource: String,
     val name: String,
     val description: String,
     val url: String,

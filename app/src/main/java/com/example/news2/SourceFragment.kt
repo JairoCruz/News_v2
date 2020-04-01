@@ -1,37 +1,23 @@
 package com.example.news2
 
 import android.app.AlertDialog
-import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
-import android.widget.CheckBox
-import android.widget.Checkable
 import android.widget.Toast
-
-import androidx.cardview.widget.CardView
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.selection.SelectionPredicates
-import androidx.recyclerview.selection.SelectionTracker
-import androidx.recyclerview.selection.StableIdKeyProvider
-import androidx.recyclerview.selection.StorageStrategy
+import androidx.recyclerview.selection.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.news2.adapters.MyItemDetailsLookup
 import com.example.news2.adapters.SourceAdapter
-import com.example.news2.database.entities.Source
 import com.example.news2.databinding.FragmentSourceBinding
 import com.example.news2.model.SourceDomain
 import com.example.news2.viewmodels.SourceViewModel
 import com.example.news2.viewmodels.viewmodelfactory.SourceViewModelFactory
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_source.*
 
 
 class SourceFragment : Fragment() {
@@ -39,16 +25,16 @@ class SourceFragment : Fragment() {
     var tracker: SelectionTracker<Long>? = null
 
 
-
     // Variables
     private val TAG = SourceFragment::class.java.simpleName
+    private val BUNDLETAG = "BUNDLETAG"
 
     private val viewModel: SourceViewModel by lazy {
         val activity = requireNotNull(this.activity) {
             "You can only access the viewModel after onActivityCreated()"
         }
         ViewModelProvider(this, SourceViewModelFactory(activity.application))
-            .get(SourceViewModel::class.java)
+                .get(SourceViewModel::class.java)
     }
 
     private var viewModelAdapter: SourceAdapter? = null
@@ -59,7 +45,7 @@ class SourceFragment : Fragment() {
 
     private val actionModelCallback = object : ActionMode.Callback {
         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-            return when (item?.itemId){
+            return when (item?.itemId) {
                 R.id.add -> {
                     mode?.finish()
                     true
@@ -85,32 +71,44 @@ class SourceFragment : Fragment() {
 
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        // this is for save selection tracker in route screen
+        tracker?.onSaveInstanceState(outState)
+        super.onSaveInstanceState(outState)
+
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        // this is for get selection tracker in route screen
+        tracker?.onRestoreInstanceState(savedInstanceState)
+
+
+    }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.sourceList.observe(viewLifecycleOwner, Observer<List<SourceDomain>> {
             it?.let {
-                viewModelAdapter?.submitList(it)
+                viewModelAdapter?.addHeaderAndSubmitList(it)
             }
-            /*sources -> sources?.apply {
-            viewModelAdapter?.sources = sources
-
-
-        }*/
         })
     }
 
 
     private lateinit var binding: FragmentSourceBinding
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+
         // Inflate the layout for this fragment
-        viewModel.eventNetworkError.observe(viewLifecycleOwner, Observer<Boolean> {
-            isNetworkError -> if (isNetworkError) onNetworkError()
+        viewModel.eventNetworkError.observe(viewLifecycleOwner, Observer<Boolean> { isNetworkError ->
+            if (isNetworkError) onNetworkError()
         })
 
 
-
-        val binding: FragmentSourceBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_source, container, false)
+        // val binding: FragmentSourceBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_source, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_source, container, false)
 
         binding.sourceSize = "Sources available"
         binding.lifecycleOwner = viewLifecycleOwner
@@ -122,50 +120,72 @@ class SourceFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = viewModelAdapter
 
-            tracker =  SelectionTracker.Builder<Long> (
-                "mySelection",
-                this,
-                StableIdKeyProvider(this),
-                MyItemDetailsLookup(this),
-                StorageStrategy.createLongStorage()
+            tracker = SelectionTracker.Builder<Long>(
+                    "mySelection",
+                    this,
+                    StableIdKeyProvider(this),
+                   // MyItemKeyProvider(this),
+                    MyItemDetailsLookup(this),
+                    StorageStrategy.createLongStorage()
             ).withSelectionPredicate(
-                SelectionPredicates.createSelectAnything()
+                    SelectionPredicates.createSelectAnything()
             ).build()
 
             tracker?.addObserver(
-                object : SelectionTracker.SelectionObserver<Long>() {
-                    override fun onSelectionChanged() {
-                        super.onSelectionChanged()
-                        val items: Int? = tracker?.selection!!.size()
-                        Log.e(TAG, "Size Selection: $items")
-                        if (items != 0){
-                            when (actionMode) {
-                                null -> {
-
-                                    actionMode = activity?.startActionMode(actionModelCallback)?.apply {
-                                        title = "Selected ${items.toString()}"
+                    object : SelectionTracker.SelectionObserver<Long>() {
+                        override fun onSelectionRestored() {
+                            super.onSelectionRestored()
+                            val items: Int? = tracker?.selection!!.size()
+                            if (items != 0) {
+                                when (actionMode) {
+                                    null -> {
+                                        actionMode = activity?.startActionMode(actionModelCallback)?.apply {
+                                            title = "Selected ${items.toString()}"
+                                        }
                                     }
-
-                                }
-                                else -> {
-
-                                    actionMode?.apply {
-                                        title = "Selected ${items.toString()}"
+                                    else -> {
+                                        actionMode?.apply {
+                                            title = "Selected ${items.toString()}"
+                                        }
+                                        false
                                     }
-                                    false
                                 }
+
                             }
-                        } else {
-                            actionMode?.finish()
                         }
+
+                        override fun onSelectionChanged() {
+                            super.onSelectionChanged()
+                            val items: Int? = tracker?.selection!!.size()
+                            Log.e(TAG, "Size Selection: $items")
+                            if (items != 0) {
+                                when (actionMode) {
+                                    null -> {
+
+                                        actionMode = activity?.startActionMode(actionModelCallback)?.apply {
+                                            title = "Selected ${items.toString()}"
+                                        }
+
+                                    }
+                                    else -> {
+
+                                        actionMode?.apply {
+                                            title = "Selected ${items.toString()}"
+                                        }
+                                        false
+                                    }
+                                }
+                            } else {
+                                actionMode?.finish()
+                            }
+                        }
+
+
                     }
-
-
-                }
 
             )
 
-           // Log.e(TAG, "aca3: ${tracker?.let { "hola3" }}")
+            // Log.e(TAG, "aca3: ${tracker?.let { "hola3" }}")
         }
 
         binding.fabShowSources.setOnClickListener {
@@ -183,13 +203,13 @@ class SourceFragment : Fragment() {
 
     }
 
-    private fun showListDialogSources(view: View){
+    private fun showListDialogSources(view: View) {
         Log.e(TAG, "Click FAb")
-       // showDialogList()
+        // showDialogList()
 
     }
 
-    private fun showDialogList(){
+    private fun showDialogList() {
         val builder: AlertDialog.Builder = activity.let {
             AlertDialog.Builder(it)
         }
@@ -209,6 +229,16 @@ class SourceFragment : Fragment() {
     }
 
 
+}
 
+class MyItemKeyProvider(private val recyclerView: RecyclerView) : ItemKeyProvider<Long>(ItemKeyProvider.SCOPE_MAPPED) {
+    override fun getKey(position: Int): Long? {
+        return recyclerView.adapter?.getItemId(position)
+    }
+
+    override fun getPosition(key: Long): Int {
+        val viewHolder = recyclerView.findViewHolderForItemId(key)
+        return viewHolder?.layoutPosition ?: RecyclerView.NO_POSITION
+    }
 
 }
