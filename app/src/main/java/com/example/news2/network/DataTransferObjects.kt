@@ -45,7 +45,9 @@ data class NetworkSource(
  * Convert Network results to database objects
  * This are function extension from NetworkSourceContainer, this is a feature from kotlin's language
  */
-fun NetworkSourceContainer.asDomainModel(): List<SourceDomain> {
+    // this method is useless at the moment
+
+/*fun NetworkSourceContainer.asDomainModel(): List<SourceDomain> {
     return sources.map {
         SourceDomain(
             id = it.id,
@@ -59,7 +61,7 @@ fun NetworkSourceContainer.asDomainModel(): List<SourceDomain> {
         )
     }
 
-}
+}*/
 
 /**
  * Convert Network results to database objects
@@ -68,7 +70,7 @@ fun NetworkSourceContainer.asDomainModel(): List<SourceDomain> {
 fun NetworkSourceContainer.asDatabaseModel(): List<Source> {
     return sources.map {
         Source(
-            id = it.id,
+            idSource = it.id,
             name = it.name,
             description = it.description,
             url = it.url,
