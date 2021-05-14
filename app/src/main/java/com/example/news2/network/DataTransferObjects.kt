@@ -43,6 +43,7 @@ data class NetworkSource(
 
 /**
  * Convert Network results to database objects
+ * This are function extension from NetworkSourceContainer, this is a feature from kotlin's language
  */
 fun NetworkSourceContainer.asDomainModel(): List<SourceDomain> {
     return sources.map {
@@ -62,6 +63,7 @@ fun NetworkSourceContainer.asDomainModel(): List<SourceDomain> {
 
 /**
  * Convert Network results to database objects
+ * This are function extension from NetworkSourceContainer, this is a feature from kotlin's language
  */
 fun NetworkSourceContainer.asDatabaseModel(): List<Source> {
     return sources.map {
